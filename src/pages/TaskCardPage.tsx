@@ -8,6 +8,7 @@ import {
   Group,
   Checkbox,
   ActionIcon,
+  Badge,
 } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
@@ -39,8 +40,28 @@ export default function HomePage() {
           {tasks.map((task) => (
             <Card withBorder shadow="sm" radius="md" mb="sm" key={task.id}>
               <Group justify="space-between" align="flex-start">
+                <Group >
+                  {task.assignees.map((name)=>(
+                    <Badge variant="light" color="blue">{name}</Badge>
+                  ))}
+                </Group>
+                <Group>
+                  <Checkbox
+                    checked={task.isDone}
+                    onChange={() => toggleTask(task.id)}
+                    label="Done"
+                  />
+                  <ActionIcon
+                    variant="light"
+                    color="red"
+                    onClick={() => removeTask(task.id)}
+                    title="Delete task"
+                  >
+                    <IconTrash size={18} />
+                  </ActionIcon>
+                  </Group>
+                  </Group>
                 <Stack>
-                  {/* เพิ่ม assignees ตรงนี้*/}
                   <Text
                     fw={600}
                     td={task.isDone ? "line-through" : "none"}
@@ -66,24 +87,10 @@ export default function HomePage() {
                       Done at: {dayjs(task.doneAt).format("ddd MMM DD YYYY")}
                     </Text>
                   )}
-                </Stack>
+                
 
-                <Group>
-                  <Checkbox
-                    checked={task.isDone}
-                    onChange={() => toggleTask(task.id)}
-                    label="Done"
-                  />
-                  <ActionIcon
-                    variant="light"
-                    color="red"
-                    onClick={() => removeTask(task.id)}
-                    title="Delete task"
-                  >
-                    <IconTrash size={18} />
-                  </ActionIcon>
-                </Group>
-              </Group>
+              </Stack>
+              
             </Card>
           ))}
         </Stack>

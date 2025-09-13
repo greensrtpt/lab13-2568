@@ -11,12 +11,12 @@ import {
   Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useTaskFormStore } from "../store/TaskFormStore";
+import { useTaskFormStore } from "../store/TaskFromStore1";
 
 interface AddTaskModalProps {
   opened: boolean;
   onClose: () => void;
-  onAdd: (title: string, description: string, dueDate: string | null) => void;
+  onAdd: (title: string, description: string, dueDate: string | null, assignees:string[]) => void;
 }
 const usersData: Record<string, { image: string; email: string }> = {
   "Emily Johnson": {
@@ -51,18 +51,34 @@ export default function AddTaskModal({
   onClose,
   onAdd,
 }: AddTaskModalProps) {
+
   const {
     title,
     description,
     dueDate,
+    assignees,
     setTitle,
     setDescription,
     setDueDate,
+    setAssignee,
     resetForm,
   } = useTaskFormStore();
+
+  const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({ option }) => (
+  <Group gap="sm">
+    <Avatar src={usersData[option.value].image} size={36} radius="xl" />
+    <div>
+      <Text size="sm">{option.value}</Text>
+      <Text size="xs" opacity={0.5}>
+        {usersData[option.value].email}
+      </Text>
+    </div>
+  </Group>
+);
+
   const handleAdd = () => {
     if (!title.trim() || !description.trim() || !dueDate) return;
-    onAdd(title, description, dueDate);
+    onAdd(title, description, dueDate,assignees);
     onClose();
     resetForm();
   };
@@ -94,6 +110,17 @@ export default function AddTaskModal({
           error={!dueDate?.trim() ? "Due Date is required" : false}
         />
         {/* เพิ่ม MultiSelect ตรงนี้*/}
+        <MultiSelect
+          label="Assignees"
+          withAsterisk
+          searchable
+          value={assignees}
+          placeholder="Search for assignees"
+          renderOption={renderMultiSelectOption}
+          onChange={(e)=>setAssignee(e)}
+          error={assignees.length ===0 ? "Assignee is required" : false}
+          data={['Emily Johnson', 'Ava Rodriguez', 'Olivia Chen', 'Ethan Barnes', 'Mason Taylor']}
+        />
         <Button onClick={handleAdd}>Save</Button>
       </Stack>
     </Modal>

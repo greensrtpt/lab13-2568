@@ -7,6 +7,7 @@ import {
   Table,
   ActionIcon,
   Checkbox,
+  Badge,
 } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
@@ -33,15 +34,23 @@ export default function TodoTablePage() {
           label={task.isDone ? "Done" : "Pending"}
         />
       </Table.Td>
-      <Table.Td>
-        {task.dueDate ? dayjs(task.dueDate).format("ddd MMM DD YYYY") : "-"}
+      <Table.Td w={150}>
+        {dayjs(task.dueDate).format("MM/DD/YYYY")}
       </Table.Td>
-      <Table.Td>{task.doneAt}</Table.Td>
+      <Table.Td>{task.isDone ? dayjs(task.doneAt).format("ddd MMM DD YYYY"): "-"}</Table.Td>
       <Table.Td>
         <ActionIcon color="red" onClick={() => removeTask(task.id)}>
           <IconTrash size={16} />
         </ActionIcon>
       </Table.Td>
+      
+        <Table.Td w={220}>
+        {task.assignees.map((name)=>(
+          <Badge variant="light" color="blue"  >{name}</Badge>
+        ))}
+        </Table.Td>
+       
+      
       {/* เพิ่ม row assignees ตรงนี้*/}
     </Table.Tr>
   ));
@@ -61,7 +70,7 @@ export default function TodoTablePage() {
           onAdd={addTask}
         />
 
-        <Table striped highlightOnHover horizontalSpacing="xl">
+        <Table striped highlightOnHover horizontalSpacing="xl" >
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Title</Table.Th>
@@ -70,6 +79,7 @@ export default function TodoTablePage() {
               <Table.Th>Due Date</Table.Th>
               <Table.Th>Completed</Table.Th>
               <Table.Th>Actions</Table.Th>
+              <Table.Th>Assignees</Table.Th>
               {/* เพิ่ม table header assignees ตรงนี้*/}
             </Table.Tr>
           </Table.Thead>
